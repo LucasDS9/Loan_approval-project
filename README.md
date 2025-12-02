@@ -83,6 +83,8 @@ Desempenho final:
 Também foi gerado um **gráfico Real vs Predito**, mostrando alto alinhamento entre os valores.  
 Por fim, uma previsão real foi realizada usando um registro separado de teste, comparando o valor real e o predito e comprovando o baixo erro do modelo.
 
+Além disso, no final, foi feito uma visão geral sobre o lucro da instituição, a porcentagem lucrativa, o valor investido e a trend de lucros por faixas semestrais.
+
 ---
 
 ## 🧠 Principais Insights do Projeto
