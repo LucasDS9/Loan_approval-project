@@ -1,0 +1,23 @@
+Importar o dataset
+info, obter e falar sobre estatisticas
+Fazer visualizações :
+
+Primeiro : 
+approved quantidade rosquinha
+Histogramas : 
+Age hue aproved, credit_score hue aproved
+
+count plot:
+
+existing_loans hue aproved, employment_status, Previous_delinquencies hue aproved ao lado
+
+Rosquinhas : 
+gender/ porcentagens de aceitos homem vs mulher, savings porcentagem e savings hue approved
+
+Segmentar :
+salário , credit_score, age quantos foram aceitos por categoria
+
+Correlacao com approved
+
+treino teste
+Pre processamento de dados ...
