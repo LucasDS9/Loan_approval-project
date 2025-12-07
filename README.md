@@ -1,4 +1,4 @@
-# **🏦Loan Approval Prediction**
+# **🏦 Loan Approval Prediction**
 
 Projeto completo de **Machine Learning** focado em prever a aprovação de empréstimos bancários.  
 Além da previsão da aprovação, o projeto também realiza **regressão** para estimar a taxa de juros (*interest rate*) ideal para cada cliente aprovado, oferecendo uma solução completa para decisões de crédito.
