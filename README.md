@@ -17,6 +17,38 @@ A resolução auxilia instituições financeiras a **reduzir riscos**, **automat
 
 ---
 
+## 📁 Estrutura do Projeto
+
+
+📦 loan_project
+├── 📁 app
+│   └── app.py
+│
+├── 📁 artifacts
+│   ├── model_classifier.pkl
+│   ├── model_regression.pkl
+│   ├── regression_features.pkl
+│   ├── regression_dtypes.pkl
+│   ├── test_classifier.pkl
+│   └── test_regression.pkl
+│
+├── 📁 data
+│   └── Loan_dataset.xlsx
+│
+├── 📁 notebooks
+│   ├── loan_full_project.ipynb
+│   └── pipeline_visual.ipynb
+│
+├── 📁 src
+│   ├── pipeline.py
+│   ├── train.py
+│   └── evaluate.py
+│
+├── README.md
+└── __pycache__
+
+---
+
 ## 🧱 **Etapas do Projeto**
 
 ### 1️⃣ **Importações e conhecimento inicial do dataset**
@@ -73,7 +105,6 @@ Resultados:
 | Modelo             | R²        | MAE      |
 |-------------------|-----------|----------|
 | Linear Regression | 0.997680  | 0.077567 |
-| Lasso Regression  | 0.996676  | 0.121511 |
 
 Desempenho final:
 
