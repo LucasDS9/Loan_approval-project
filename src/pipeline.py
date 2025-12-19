@@ -65,3 +65,5 @@ def regression_pipeline():
         ]
     )
     return pipe
+
+print(1)
