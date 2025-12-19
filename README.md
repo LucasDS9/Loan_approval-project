@@ -19,7 +19,7 @@ A resolução auxilia instituições financeiras a **reduzir riscos**, **automat
 
 ## 📁 Estrutura do Projeto
 
-
+```text
 📦 loan_project
 ├── 📁 app
 │   └── app.py
@@ -46,7 +46,7 @@ A resolução auxilia instituições financeiras a **reduzir riscos**, **automat
 │
 ├── README.md
 └── __pycache__
-
+```
 ---
 
 ## 🧱 **Etapas do Projeto**
