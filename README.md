@@ -22,7 +22,7 @@ A resolução auxilia instituições financeiras a **reduzir riscos**, **automat
 ```text
 📦 loan_project
 ├── 📁 app
-│   └── app.py
+│   └── app.py (Aplicação em streamlit)
 │
 ├── 📁 artifacts
 │   ├── model_classifier.pkl
@@ -33,14 +33,14 @@ A resolução auxilia instituições financeiras a **reduzir riscos**, **automat
 │   └── test_regression.pkl
 │
 ├── 📁 data
-│   └── Loan_dataset.xlsx
+│   └── Loan_dataset.xlsx (Dataset do projeto)
 │
 ├── 📁 notebooks
-│   ├── loan_full_project.ipynb
-│   └── pipeline_visual.ipynb
+│   ├── loan_full_project.ipynb (Projeto completo)
+│   └── pipeline_visual.ipynb 
 │
 ├── 📁 src
-│   ├── pipeline.py
+│   ├── pipeline.py 
 │   ├── train.py
 │   └── evaluate.py
 │
@@ -106,15 +106,20 @@ Resultados:
 |-------------------|-----------|----------|
 | Linear Regression | 0.997680  | 0.077567 |
 
-Desempenho final:
+### Desempenho final do modelo:
 
 - **Treino:** **R² = 0.9990 | MAE = 0.0708** 
-- **Teste:** **R² = 0.9977 | MAE = 0.0776**  
+- **Teste:** **R² = 0.9977 | MAE = 0.0776**
 
 Também foi gerado um **gráfico Real vs Predito**, mostrando alto alinhamento entre os valores.  
 Por fim, uma previsão real foi realizada usando um registro separado de teste, comparando o valor real e o predito e comprovando o baixo erro do modelo.
 
 Além disso, no final, foi feito uma visão geral sobre o lucro da instituição, a porcentagem lucrativa, o valor investido e a trend de lucros por faixas semestrais.
+
+---
+
+### 5️⃣ Modularização e aplicação em streamlit
+O projeto conta com uma aplicação em streamlit onde o usuário insere informações e recebe o resultado de aprovação ou rejeição, se aprovado também é calculado automaticamente a taxa de juros a ser paga
 
 ---
 
