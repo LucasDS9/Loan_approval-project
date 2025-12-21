@@ -16,27 +16,21 @@ st.title("💰 Simulador Completo de Empréstimo")
 st.write("Preencha **todas** as informações abaixo para testar a precisão do modelo.")
 
 
-# ===============================
-# Paths e artefatos
-# ===============================
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARTIFACTS_DIR = os.path.join(BASE_DIR, "artifacts")
 
 classifier = joblib.load(os.path.join(ARTIFACTS_DIR, "model_classifier.pkl"))
 regressor = joblib.load(os.path.join(ARTIFACTS_DIR, "model_regression.pkl"))
 
-# 🔒 PASSO 2 — carregar verdade do modelo
+
 features = joblib.load(os.path.join(ARTIFACTS_DIR, "regression_features.pkl"))
 dtypes = joblib.load(os.path.join(ARTIFACTS_DIR, "regression_dtypes.pkl"))
 
-# (mantido como você pediu)
+
 X_test, y_test = joblib.load(os.path.join(ARTIFACTS_DIR, "test_classifier.pkl"))
 X_test_reg, y_test_reg = joblib.load(os.path.join(ARTIFACTS_DIR, "test_regression.pkl"))
 
 
-# ===============================
-# Inputs do usuário
-# ===============================
 st.subheader("📋 Dados Pessoais")
 
 age = st.number_input("Idade", 18, 100, 30)
@@ -71,9 +65,6 @@ debt_to_income = monthly_debt / salary
 st.write(f"**Debt-to-Income (DTI):** {debt_to_income:.3f}")
 
 
-# ===============================
-# Inferência
-# ===============================
 if st.button("🔍 Avaliar Empréstimo"):
 
     input_data = pd.DataFrame([{
@@ -100,9 +91,7 @@ if st.button("🔍 Avaliar Empréstimo"):
     st.write("📌 **Dados enviados ao modelo (após alinhamento):**")
     st.dataframe(input_data)
 
-    # ===============================
-    # Classificação
-    # ===============================
+
     approval = classifier.predict(input_data)[0]
 
     st.divider()

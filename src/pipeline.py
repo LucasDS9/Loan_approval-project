@@ -1,5 +1,3 @@
-# pipeline.py
-
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.tree import DecisionTreeClassifier
@@ -17,12 +15,12 @@ def build_preprocess(categorical, numeric_knn):
                     handle_unknown="use_encoded_value",
                     unknown_value=-1
                 ),
-                categorical,
+                categorical
             ),
             ("median", SimpleImputer(strategy="median"), ["age"]),
-            ("knn", KNNImputer(n_neighbors=5), numeric_knn),
+            ("knn", KNNImputer(n_neighbors=5), numeric_knn)
         ],
-        remainder="passthrough",
+        remainder="passthrough"
     )
     return preprocess
 
@@ -65,5 +63,3 @@ def regression_pipeline():
         ]
     )
     return pipe
-
-print(1)

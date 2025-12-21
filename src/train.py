@@ -15,7 +15,6 @@ ARTIFACTS_DIR.mkdir(exist_ok=True)
 df = pd.read_excel(DATA_PATH)
 df.drop(columns=["ID", "cpf"], inplace=True)
 
-
 X = df.drop(columns=["approved", "interest_rate"])
 y = df["approved"]
 
@@ -58,8 +57,4 @@ DTYPES_REG = X_train_reg.dtypes.astype(str).to_dict()
 joblib.dump(FEATURES_REG, ARTIFACTS_DIR / "regression_features.pkl")
 joblib.dump(DTYPES_REG, ARTIFACTS_DIR / "regression_dtypes.pkl")
 
-
-# ===============================
-# Logs
-# ===============================
 print("✅ Treino finalizado e artefatos salvos em /artifacts")
