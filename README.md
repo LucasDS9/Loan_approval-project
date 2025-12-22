@@ -142,6 +142,8 @@ Essa abordagem pode ser facilmente expandida e aplicada em cenários reais de in
 ---
 ## 🛠 Tecnologias Utilizadas
 
+## 🛠 Tecnologias Utilizadas
+
 | Tecnologia | Função |
 |-----------|--------|
 | 🐍 **Python** | Linguagem principal do projeto |
@@ -149,5 +151,9 @@ Essa abordagem pode ser facilmente expandida e aplicada em cenários reais de in
 | 📊 **Matplotlib / Seaborn** | Visualizações e gráficos |
 | 🤖 **Scikit-learn** | Modelagem e métricas |
 | 🌲 **RandomForestClassifier** | Classificador utilizado |
+| 🚀 **Streamlit** | Criação da interface web e deploy do modelo |
+| 📦 **Pickle** | Serialização e carregamento do modelo |
+| ⚙️ **Joblib** | Persistência eficiente de modelos e objetos grandes |
+
 
 ---
