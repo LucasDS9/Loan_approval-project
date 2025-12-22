@@ -82,11 +82,11 @@ O modelo ideal foi selecionado através de **GridSearchCV** e avaliado pelas mé
 ```
               precision    recall  f1-score   support
 
-           0       1.00      0.97      0.99      1150
-           1       0.92      1.00      0.96       350
+           0       1.00      0.98      0.99      1150
+           1       0.93      1.00      0.96       350
 
     accuracy                           0.98      1500
-   macro avg       0.96      0.99      0.97      1500
+   macro avg       0.96      0.99      0.98      1500
 weighted avg       0.98      0.98      0.98      1500
 ```
 
