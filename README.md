@@ -142,8 +142,6 @@ Essa abordagem pode ser facilmente expandida e aplicada em cenários reais de in
 ---
 ## 🛠 Tecnologias Utilizadas
 
-## 🛠 Tecnologias Utilizadas
-
 | Tecnologia | Função |
 |-----------|--------|
 | 🐍 **Python** | Linguagem principal do projeto |
