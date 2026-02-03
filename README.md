@@ -77,7 +77,7 @@ pip install -r requirements.txt
 
 **Execução via Streamlit (interface interativa)**
 Inicie a aplicação: streamlit run app/app.py
-Acesse o link exibido no terminal (ex: http://localhost:8501).
+Acesse o link exibido no terminal (ex: "http://localhost:8501").
 
 Selecione o produto desejado e clique em Gerar análise.
 
