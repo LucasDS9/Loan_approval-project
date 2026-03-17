@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Jupyter
+notebooks/
+.ipynb_checkpoints/
+
+# Data (não vai para o container)
+data/
+
+# Metrics (gerado em runtime)
+artifacts/metrics.json
+
+# Frontend (descomente se quiser excluir ao servir pelo Vercel separado)
+# frontend/
+
+# Dev / CI
+.env
+.env.*
+.vscode/
+.git/
+.gitignore
+*.log
+
+# Docs
+README.md
+README_en.md

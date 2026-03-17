@@ -1,7 +1,10 @@
+fastapi
+uvicorn[standard]
+pydantic
+joblib
 pandas
 numpy
-matplotlib
-seaborn
 scikit-learn==1.8.0
 xgboost
 openpyxl
+aiofiles

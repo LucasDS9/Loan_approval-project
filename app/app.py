@@ -1,104 +1,156 @@
-import streamlit as st
-import pandas as pd
+from pathlib import Path
+from typing import Literal
+import json
 import joblib
-import os
-from sklearn.metrics import accuracy_score, classification_report, mean_squared_error, r2_score
-import numpy as np
+import pandas as pd
+from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, field_validator
 
 
-st.set_page_config(
-    page_title="Análise de Crédito",
-    page_icon="💰",
-    layout="centered"
+BASE_DIR = Path(__file__).resolve().parent.parent
+ARTIFACTS_DIR = BASE_DIR / "artifacts"
+FRONTEND_DIR = BASE_DIR / "frontend"
+
+
+clf = joblib.load(ARTIFACTS_DIR / "model_classifier.pkl")
+reg = joblib.load(ARTIFACTS_DIR / "model_regression.pkl")
+features: list[str] = joblib.load(ARTIFACTS_DIR / "regression_features.pkl")
+dtypes: dict = joblib.load(ARTIFACTS_DIR / "regression_dtypes.pkl")
+
+
+app = FastAPI(
+    title="Loan Approval API",
+    description="Predicts loan approval and, when approved, estimates the interest rate.",
+    version="1.0.0",
 )
 
-st.title("💰 Simulador Completo de Empréstimo")
-st.write("Preencha **todas** as informações abaixo para testar a precisão do modelo.")
-
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ARTIFACTS_DIR = os.path.join(BASE_DIR, "artifacts")
-
-classifier = joblib.load(os.path.join(ARTIFACTS_DIR, "model_classifier.pkl"))
-regressor = joblib.load(os.path.join(ARTIFACTS_DIR, "model_regression.pkl"))
-
-
-features = joblib.load(os.path.join(ARTIFACTS_DIR, "regression_features.pkl"))
-dtypes = joblib.load(os.path.join(ARTIFACTS_DIR, "regression_dtypes.pkl"))
-
-
-X_test, y_test = joblib.load(os.path.join(ARTIFACTS_DIR, "test_classifier.pkl"))
-X_test_reg, y_test_reg = joblib.load(os.path.join(ARTIFACTS_DIR, "test_regression.pkl"))
-
-
-st.subheader("📋 Dados Pessoais")
-
-age = st.number_input("Idade", 18, 100, 30)
-gender = st.selectbox("Gênero", options=["M", "F"])
-employment_status = st.selectbox("Status de Emprego", options=["employed", "unemployed", "autonomous"])
-
-st.subheader("💰 Informações Financeiras")
-salary = st.number_input("Salário mensal (R$)", min_value=1_000, max_value=100_000, value=5_000, step=500)
-credit_score = st.slider("Credit Score", 300, 1000, 650)
-previous_delinquencies = st.number_input("Delinquências prévias", 0, 20, 0)
-existing_loans_count = st.number_input("Quantidade de empréstimos ativos", 0, 10, 0)
-savings_account = st.selectbox("Possui conta poupança?", options=["yes", "no"])
-
-st.subheader("📊 Informações do Empréstimo")
-loan_amount = st.number_input(
-    "Valor do empréstimo (R$)",
-    min_value=1_000,
-    max_value=1_000_000,
-    value=10_000,
-    step=1_000
-)
-loan_term_months = st.slider("Prazo do empréstimo (meses)", 1, 60, 36)
-
-st.subheader("📉 Dívida")
-monthly_debt = st.number_input(
-    "Gasto mensal com dívidas (R$)",
-    min_value=0.0,
-    value=1_000.0
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-debt_to_income = monthly_debt / salary
-st.write(f"**Debt-to-Income (DTI):** {debt_to_income:.3f}")
+
+app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="frontend")
+
+@app.get("/", include_in_schema=False)
+def root():
+    return FileResponse(FRONTEND_DIR / "index.html")
 
 
-if st.button("🔍 Avaliar Empréstimo"):
+class LoanRequest(BaseModel):
+    age: int = Field(..., ge=0, le=100, description="Applicant age (0–100)")
+    gender: Literal["M", "F"] = Field(..., description="Gender: 'M' or 'F'")
+    employment_status: Literal["employed", "unemployed", "autonomous"] = Field(
+        ..., description="Employment status"
+    )
+    salary: float = Field(..., gt=0, description="Monthly salary in BRL")
+    credit_score: int = Field(..., ge=300, le=1000, description="Credit score (300–1000)")
+    previous_delinquencies: int = Field(..., ge=0, description="Number of previous delinquencies")
+    existing_loans_count: int = Field(..., ge=0, description="Number of active loans")
+    savings_account: Literal["yes", "no"] = Field(..., description="Has savings account")
+    loan_amount: float = Field(..., gt=0, description="Requested loan amount in BRL")
+    loan_term_months: int = Field(..., ge=1, le=60, description="Loan term in months (1–60)")
+    monthly_debt: float = Field(..., ge=0, description="Monthly debt payment in BRL")
 
-    input_data = pd.DataFrame([{
-        "age": age,
-        "salary": salary,
-        "credit_score": credit_score,
-        "Previous_Delinquencies": previous_delinquencies,
-        "loan_amount": loan_amount,
-        "Loan_Term_Months": loan_term_months,
-        "Existing_Loans_Count": existing_loans_count,
+    @field_validator("monthly_debt")
+    @classmethod
+    def debt_must_not_exceed_salary(cls, v: float, info) -> float:
+        salary = info.data.get("salary")
+        if salary and v > salary:
+            raise ValueError("monthly_debt cannot exceed salary")
+        return v
+
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "age": 35,
+                "gender": "M",
+                "employment_status": "employed",
+                "salary": 8000,
+                "credit_score": 720,
+                "previous_delinquencies": 0,
+                "existing_loans_count": 1,
+                "savings_account": "yes",
+                "loan_amount": 25000,
+                "loan_term_months": 36,
+                "monthly_debt": 1200,
+            }
+        }
+    }
+
+
+class LoanResponse(BaseModel):
+    approved: bool
+    interest_rate: float | None = Field(
+        None,
+        description="Estimated annual interest rate (%). Only present when approved.",
+    )
+    message: str
+
+
+
+def build_dataframe(req: LoanRequest) -> pd.DataFrame:
+    debt_to_income = req.monthly_debt / req.salary
+
+    raw = {
+        "age": req.age,
+        "salary": req.salary,
+        "credit_score": req.credit_score,
+        "Previous_Delinquencies": req.previous_delinquencies,
+        "loan_amount": req.loan_amount,
+        "Loan_Term_Months": req.loan_term_months,
+        "Existing_Loans_Count": req.existing_loans_count,
         "debt_to_income": debt_to_income,
-        "employment_status": employment_status,
-        "gender": gender,
-        "Savings_Account": savings_account
-    }])
+        "employment_status": req.employment_status,
+        "gender": req.gender,
+        "Savings_Account": req.savings_account,
+    }
 
-    # 🔒 PASSO 2 — força ordem e tipos corretos
-    input_data = input_data.reindex(columns=features)
-
+    df = pd.DataFrame([raw]).reindex(columns=features)
     for col, dtype in dtypes.items():
-        input_data[col] = input_data[col].astype(dtype)
-
-    st.divider()
-    st.write("📌 **Dados enviados ao modelo (após alinhamento):**")
-    st.dataframe(input_data)
+        if col in df.columns:
+            df[col] = df[col].astype(dtype)
+    return df
 
 
-    approval = classifier.predict(input_data)[0]
 
-    st.divider()
+@app.get("/healthcheck", tags=["Infra"])
+def healthcheck():
+    """Returns service health status."""
+    return {"status": "ok"}
 
-    if approval == 1:
-        st.success("✅ Crédito aprovado")
-        interest_rate = regressor.predict(input_data)[0]
-        st.metric(label="📈 Taxa de Juros Estimada", value=f"{interest_rate:.2f}%")
-    else:
-        st.error("❌ Crédito não aprovado")
+
+@app.post("/predict", response_model=LoanResponse, tags=["Prediction"])
+def predict(request: LoanRequest):
+    """
+    Evaluates a loan application.
+
+    - Returns **approved: true** and an estimated **interest_rate** when the
+      classifier approves the credit.
+    - Returns **approved: false** with no interest rate when denied.
+    """
+    try:
+        df = build_dataframe(request)
+    except Exception as exc:
+        raise HTTPException(status_code=422, detail=str(exc))
+
+    approved: bool = bool(clf.predict(df)[0] == 1)
+
+    if approved:
+        interest_rate: float = round(float(reg.predict(df)[0]), 4)
+        return LoanResponse(
+            approved=True,
+            interest_rate=interest_rate,
+            message=f"Credit approved. Estimated interest rate: {interest_rate:.2f}%",
+        )
+
+    return LoanResponse(
+        approved=False,
+        interest_rate=None,
+        message="Credit not approved.",
+    )

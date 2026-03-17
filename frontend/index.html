@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Análise de Crédito</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/css/style.css"/>
+</head>
+<body>
+<div class="page">
+
+  <header class="header">
+    <h1>💰 Análise de Crédito</h1>
+    <p class="tagline">Simulador de aprovação de empréstimo com estimativa de taxa de juros</p>
+  </header>
+
+  <main>
+
+    <!-- Dados Pessoais -->
+    <div class="card">
+      <h2>Dados Pessoais</h2>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="age">Idade</label>
+          <input type="number" id="age" min="0" max="100" value="30" placeholder="0 – 100"/>
+        </div>
+        <div class="form-field">
+          <label for="gender">Gênero</label>
+          <select id="gender">
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="employment_status">Status de emprego</label>
+          <select id="employment_status">
+            <option value="employed">Empregado</option>
+            <option value="unemployed">Desempregado</option>
+            <option value="autonomous">Autônomo</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="savings_account">Conta poupança</label>
+          <select id="savings_account">
+            <option value="yes">Sim</option>
+            <option value="no">Não</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações Financeiras -->
+    <div class="card">
+      <h2>Informações Financeiras</h2>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="salary">Salário mensal (R$)</label>
+          <input type="number" id="salary" min="1000" max="100000" value="5000" step="500"/>
+        </div>
+        <div class="form-field">
+          <label for="credit_score">Credit Score</label>
+          <input type="number" id="credit_score" min="300" max="1000" value="650" placeholder="300 – 1000"/>
+        </div>
+        <div class="form-field">
+          <label for="previous_delinquencies">Delinquências prévias</label>
+          <input type="number" id="previous_delinquencies" min="0" value="0"/>
+        </div>
+        <div class="form-field">
+          <label for="existing_loans_count">Empréstimos ativos</label>
+          <input type="number" id="existing_loans_count" min="0" max="10" value="0"/>
+        </div>
+        <div class="form-field">
+          <label for="monthly_debt">Gasto mensal com dívidas (R$)</label>
+          <input type="number" id="monthly_debt" min="0" value="1000" step="100"/>
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:flex-end">
+          <div class="dti-row">
+            <span>Debt-to-Income (DTI)</span>
+            <strong id="dti-display">0.200</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informações do Empréstimo -->
+    <div class="card">
+      <h2>Informações do Empréstimo</h2>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="loan_amount">Valor solicitado (R$)</label>
+          <input type="number" id="loan_amount" min="1000" max="1000000" value="10000" step="1000"/>
+        </div>
+        <div class="form-field">
+          <label for="loan_term_months">Prazo (meses)</label>
+          <input type="number" id="loan_term_months" min="1" max="60" value="36"/>
+          <span class="hint">1 – 60 meses</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <button class="btn btn-primary" id="submit-btn">Avaliar Empréstimo</button>
+
+    <div class="error-box hidden" id="error-box" style="margin-top:1rem"></div>
+
+    <div class="card result-card hidden" id="result-card" style="margin-top:1.5rem">
+      <h2>Resultado da Análise</h2>
+      <div id="result-content"></div>
+    </div>
+
+
+
+    <!-- Model Insights -->
+    <div class="card" style="margin-top:1.5rem">
+      <h2>Desempenho do Modelo</h2>
+
+      <!-- Classification + Regression side by side -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+
+        <!-- Classification -->
+        <div style="background:#0f0f12;border:1px solid #2d2d35;border-radius:8px;padding:1rem">
+          <p style="font-size:.7rem;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.85rem">Classificação</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.85rem">
+            <div style="background:#18181c;border:1px solid #2d2d35;border-radius:6px;padding:.65rem .75rem">
+              <span style="font-size:.65rem;color:#a1a1aa;text-transform:uppercase;letter-spacing:.04em;display:block">Acurácia</span>
+              <span style="font-size:1.1rem;font-weight:700;color:#818cf8">98%</span>
+            </div>
+            <div style="background:#18181c;border:1px solid #2d2d35;border-radius:6px;padding:.65rem .75rem">
+              <span style="font-size:.65rem;color:#a1a1aa;text-transform:uppercase;letter-spacing:.04em;display:block">F1 Macro</span>
+              <span style="font-size:1.1rem;font-weight:700;color:#818cf8">98%</span>
+            </div>
+          </div>
+          <table style="width:100%;border-collapse:collapse;font-size:.78rem">
+            <thead>
+              <tr style="border-bottom:1px solid #2d2d35">
+                <th style="text-align:left;padding:.35rem .5rem;color:#a1a1aa;font-weight:600">Classe</th>
+                <th style="text-align:right;padding:.35rem .5rem;color:#a1a1aa;font-weight:600">Prec.</th>
+                <th style="text-align:right;padding:.35rem .5rem;color:#a1a1aa;font-weight:600">Recall</th>
+                <th style="text-align:right;padding:.35rem .5rem;color:#a1a1aa;font-weight:600">F1</th>
+                <th style="text-align:right;padding:.35rem .5rem;color:#a1a1aa;font-weight:600">N</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid rgba(45,45,53,.4)">
+                <td style="padding:.35rem .5rem;color:#e4e4e7">Reprovado</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#e4e4e7">1.00</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#e4e4e7">0.98</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#e4e4e7">0.99</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#a1a1aa">1150</td>
+              </tr>
+              <tr>
+                <td style="padding:.35rem .5rem;color:#e4e4e7">Aprovado</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#e4e4e7">0.93</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#e4e4e7">1.00</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#e4e4e7">0.96</td>
+                <td style="text-align:right;padding:.35rem .5rem;color:#a1a1aa">350</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Regression -->
+        <div style="background:#0f0f12;border:1px solid #2d2d35;border-radius:8px;padding:1rem">
+          <p style="font-size:.7rem;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.85rem">Regressão — Taxa de Juros</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.85rem">
+            <div style="background:#18181c;border:1px solid #2d2d35;border-radius:6px;padding:.65rem .75rem">
+              <span style="font-size:.65rem;color:#a1a1aa;text-transform:uppercase;letter-spacing:.04em;display:block">R²</span>
+              <span style="font-size:1.1rem;font-weight:700;color:#22c55e">0.9977</span>
+            </div>
+            <div style="background:#18181c;border:1px solid #2d2d35;border-radius:6px;padding:.65rem .75rem">
+              <span style="font-size:.65rem;color:#a1a1aa;text-transform:uppercase;letter-spacing:.04em;display:block">MAE</span>
+              <span style="font-size:1.1rem;font-weight:700;color:#22c55e">0.0776</span>
+            </div>
+          </div>
+          <!-- Regression equation -->
+          <p style="font-size:.7rem;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.6rem">Equação do modelo</p>
+          <div style="background:#18181c;border:1px solid #2d2d35;border-radius:6px;padding:.75rem;font-size:.8rem;color:#e4e4e7;line-height:1.8;font-variant-numeric:tabular-nums">
+            <span style="color:#818cf8;font-weight:600">Taxa</span> = 20.898<br/>
+            <span style="color:#a1a1aa;padding-left:.5rem">− 0.020 × credit_score</span><br/>
+            <span style="color:#a1a1aa;padding-left:.5rem">− 0.041 × Loan_Term_Months</span><br/>
+            <span style="color:#a1a1aa;padding-left:.5rem">+ 0.598 × Existing_Loans_Count</span><br/>
+            <span style="color:#a1a1aa;padding-left:.5rem">+ 6.609 × debt_to_income</span><br/>
+            <span style="color:#a1a1aa;padding-left:.5rem">− 0.007 × Savings_Account</span><br/>
+            <span style="color:#a1a1aa;padding-left:.5rem">− 0.005 × gender</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature Importance -->
+      <p style="font-size:.7rem;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.85rem">Feature Importance — Aprovação</p>
+      <div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.5rem">
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+            <span style="font-size:.8rem;color:#e4e4e7;font-weight:500">credit_score</span>
+            <span style="font-size:.8rem;color:#818cf8;font-weight:600">35.3%</span>
+          </div>
+          <div style="height:6px;background:#2d2d35;border-radius:3px"><div style="height:6px;width:35.3%;background:#6366f1;border-radius:3px"></div></div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+            <span style="font-size:.8rem;color:#e4e4e7;font-weight:500">debt_to_income</span>
+            <span style="font-size:.8rem;color:#818cf8;font-weight:600">22.8%</span>
+          </div>
+          <div style="height:6px;background:#2d2d35;border-radius:3px"><div style="height:6px;width:22.8%;background:#6366f1;border-radius:3px"></div></div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+            <span style="font-size:.8rem;color:#e4e4e7;font-weight:500">employment_status</span>
+            <span style="font-size:.8rem;color:#818cf8;font-weight:600">20.6%</span>
+          </div>
+          <div style="height:6px;background:#2d2d35;border-radius:3px"><div style="height:6px;width:20.6%;background:#6366f1;border-radius:3px"></div></div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+            <span style="font-size:.8rem;color:#e4e4e7;font-weight:500">salary</span>
+            <span style="font-size:.8rem;color:#818cf8;font-weight:600">10.7%</span>
+          </div>
+          <div style="height:6px;background:#2d2d35;border-radius:3px"><div style="height:6px;width:10.7%;background:#6366f1;border-radius:3px"></div></div>
+        </div>
+
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:.25rem">
+            <span style="font-size:.8rem;color:#e4e4e7;font-weight:500">age</span>
+            <span style="font-size:.8rem;color:#818cf8;font-weight:600">10.6%</span>
+          </div>
+          <div style="height:6px;background:#2d2d35;border-radius:3px"><div style="height:6px;width:10.6%;background:#6366f1;border-radius:3px"></div></div>
+        </div>
+
+      </div>
+
+      <!-- Correlations -->
+      <p style="font-size:.7rem;font-weight:600;color:#a1a1aa;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.85rem">Correlação com Aprovação</p>
+      <div style="display:flex;flex-direction:column;gap:.65rem">
+
+        <div style="background:#0f0f12;border:1px solid #2d2d35;border-radius:8px;padding:.85rem 1rem">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+            <span style="font-size:.875rem;font-weight:600;color:#e4e4e7">credit_score</span>
+            <span style="font-size:.75rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;background:rgba(34,197,94,.15);color:#22c55e">+0.349</span>
+          </div>
+          <p style="font-size:.8rem;color:#a1a1aa;margin:0">Quanto maior o score, maior a chance de aprovação. É o critério mais determinante do modelo — candidatos abaixo de ~550 são reprovados quase automaticamente.</p>
+        </div>
+
+        <div style="background:#0f0f12;border:1px solid #2d2d35;border-radius:8px;padding:.85rem 1rem">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+            <span style="font-size:.875rem;font-weight:600;color:#e4e4e7">debt_to_income</span>
+            <span style="font-size:.75rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;background:rgba(239,68,68,.15);color:#ef4444">−0.385</span>
+          </div>
+          <p style="font-size:.8rem;color:#a1a1aa;margin:0">Maior proporção de dívida sobre renda reduz fortemente a aprovação. Indica ao modelo que o solicitante já tem comprometimento financeiro elevado.</p>
+        </div>
+
+        <div style="background:#0f0f12;border:1px solid #2d2d35;border-radius:8px;padding:.85rem 1rem">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+            <span style="font-size:.875rem;font-weight:600;color:#e4e4e7">employment_status</span>
+            <span style="font-size:.75rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;background:rgba(239,68,68,.15);color:#ef4444">−0.220</span>
+          </div>
+          <p style="font-size:.8rem;color:#a1a1aa;margin:0">Status desempregado ou autônomo correlaciona negativamente com aprovação, refletindo maior risco de inadimplência percebido pelo modelo.</p>
+        </div>
+
+        <div style="background:#0f0f12;border:1px solid #2d2d35;border-radius:8px;padding:.85rem 1rem">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+            <span style="font-size:.875rem;font-weight:600;color:#e4e4e7">Previous_Delinquencies</span>
+            <span style="font-size:.75rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;background:rgba(239,68,68,.15);color:#ef4444">−0.330</span>
+          </div>
+          <p style="font-size:.8rem;color:#a1a1aa;margin:0">Correlação indireta: delinquências ≥ 3 tendem a andar junto com credit_score baixo, o que leva à reprovação via score — não há causalidade direta, mas o efeito combinado é forte.</p>
+        </div>
+
+        <div style="background:#0f0f12;border:1px solid #2d2d35;border-radius:8px;padding:.85rem 1rem">
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
+            <span style="font-size:.875rem;font-weight:600;color:#e4e4e7">salary</span>
+            <span style="font-size:.75rem;font-weight:700;padding:.1rem .4rem;border-radius:4px;background:rgba(34,197,94,.15);color:#22c55e">+0.080</span>
+          </div>
+          <p style="font-size:.8rem;color:#a1a1aa;margin:0">Renda mais alta aumenta levemente a probabilidade de aprovação, mas o efeito é moderado — o modelo pondera mais o score e o DTI do que o salário isolado.</p>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>Powered by FastAPI · Loan Approval Project</p>
+  </footer>
+
+</div>
+
+
+<script src="/static/js/config.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>

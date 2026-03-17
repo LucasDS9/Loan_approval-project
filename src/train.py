@@ -48,9 +48,6 @@ joblib.dump(
 )
 
 
-# ===============================
-# 🔒 CONGELAR VERDADE DO MODELO
-# ===============================
 FEATURES_REG = X_train_reg.columns.tolist()
 DTYPES_REG = X_train_reg.dtypes.astype(str).to_dict()
 

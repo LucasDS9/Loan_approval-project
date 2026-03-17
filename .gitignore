@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Artifacts (modelos grandes — use Git LFS ou gere no deploy)
+artifacts/*.pkl
+
+# Metrics (gerado automaticamente pela API)
+artifacts/metrics.json
+
+# Data
+data/
+
+# Environment
+.env
+.env.*
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
