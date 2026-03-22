@@ -1,5 +1,4 @@
 (function () {
-  // ─── Helpers ────────────────────────────────────────────────
   function getApiBase() {
     return typeof window.API_BASE !== "undefined"
       ? window.API_BASE
@@ -10,7 +9,7 @@
     return document.getElementById(id);
   }
 
-  // ─── DTI live update ─────────────────────────────────────────
+
   function updateDTI() {
     var salary = parseFloat(qs("salary").value) || 1;
     var debt = parseFloat(qs("monthly_debt").value) || 0;
@@ -21,7 +20,7 @@
   qs("monthly_debt").addEventListener("input", updateDTI);
   updateDTI();
 
-  // ─── Build payload ────────────────────────────────────────────
+
   function getPayload() {
     return {
       age: parseInt(qs("age").value),
@@ -38,7 +37,6 @@
     };
   }
 
-  // ─── UI helpers ───────────────────────────────────────────────
   function showError(message) {
     var box = qs("error-box");
     box.textContent = message;
@@ -52,25 +50,33 @@
     card.classList.remove("hidden");
     var content = qs("result-content");
 
+    var explanationHtml = data.explanation
+      ? '<div class="explanation-box">' +
+          "<h3>Análise do agente</h3>" +
+          "<p>" + escapeHtml(data.explanation).replace(/\n/g, "<br>") + "</p>" +
+        "</div>"
+      : "";
+
     if (data.approved) {
-      content.innerHTML =
-        '<div class="result-inner">' +
-          '<span class="badge badge-success">✓ Crédito Aprovado</span>' +
-          '<p class="result-headline">Empréstimo aprovado!</p>' +
-          '<p class="result-meta">' + escapeHtml(data.message) + "</p>" +
-          '<div class="rate-row">' +
-            '<span class="rate-label">Taxa de Juros Estimada</span>' +
-            '<span class="rate-value">' + data.interest_rate.toFixed(2) + "%</span>" +
-          "</div>" +
-        "</div>";
-    } else {
-      content.innerHTML =
-        '<div class="result-inner">' +
-          '<span class="badge badge-danger">✗ Crédito Negado</span>' +
-          '<p class="result-headline">Solicitação não aprovada</p>' +
-          '<p class="result-meta">' + escapeHtml(data.message) + "</p>" +
-        "</div>";
-    }
+  content.innerHTML =
+    '<div class="result-inner">' +
+      '<span class="badge badge-success">✓ Crédito Aprovado</span>' +
+      '<p class="result-headline">Empréstimo aprovado!</p>' +
+      '<div class="rate-row">' +
+        '<span class="rate-label">Taxa total no período</span>' +
+        '<span class="rate-value">' + data.interest_rate.toFixed(2) + "%</span>" +
+      "</div>" +
+      '<div class="rate-row">' +
+        '<span class="rate-label">Total a pagar</span>' +
+        '<span class="rate-value">R$ ' + data.total_amount.toLocaleString("pt-BR", {minimumFractionDigits: 2}) + "</span>" +
+      "</div>" +
+      '<div class="rate-row">' +
+        '<span class="rate-label">Parcela mensal</span>' +
+        '<span class="rate-value">R$ ' + data.monthly_payment.toLocaleString("pt-BR", {minimumFractionDigits: 2}) + "</span>" +
+      "</div>" +
+      explanationHtml +
+    "</div>";
+}
   }
 
   function escapeHtml(s) {
@@ -79,7 +85,6 @@
     return div.innerHTML;
   }
 
-  // ─── Submit ───────────────────────────────────────────────────
   qs("submit-btn").addEventListener("click", function () {
     var btn = qs("submit-btn");
     btn.disabled = true;
@@ -111,10 +116,9 @@
       });
   });
 
-  // ─── Metrics modal ────────────────────────────────────────────
-  qs("metrics-btn").addEventListener("click", openMetrics);
-  qs("modal-close").addEventListener("click", closeModal);
-  qs("modal-overlay").addEventListener("click", function (e) {
+  qs("metrics-btn") && qs("metrics-btn").addEventListener("click", openMetrics);
+  qs("modal-close") && qs("modal-close").addEventListener("click", closeModal);
+  qs("modal-overlay") && qs("modal-overlay").addEventListener("click", function (e) {
     if (e.target === qs("modal-overlay")) closeModal();
   });
 
