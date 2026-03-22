@@ -12,7 +12,10 @@ from pydantic import BaseModel, Field, field_validator
 from dotenv import load_dotenv
 from groq import Groq
 
-load_dotenv()
+if os.environ.get("RENDER"):
+    load_dotenv("/etc/secrets/.env")
+else:
+    load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ARTIFACTS_DIR = BASE_DIR / "artifacts"
@@ -117,10 +120,7 @@ def build_dataframe(req: LoanRequest) -> pd.DataFrame:
 
 
 def _get_groq_client():
-    api_key = os.environ.get("GROQ_API_KEY")
-    if not api_key:
-        raise ValueError("GROQ_API_KEY não encontrada.")
-    return Groq(api_key=api_key)
+    return Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 
 def _run_explanation(
@@ -202,14 +202,14 @@ def predict(request: LoanRequest):
 
     if approved:
         raw_rate = round(float(reg.predict(df)[0]), 4)
-        interest_rate = round(raw_rate * 2, 4)  # multiplica por 2
+        interest_rate = round(raw_rate * 2, 4)
         total_amount = round(request.loan_amount * (1 + interest_rate / 100), 2)
         monthly_payment = round(total_amount / request.loan_term_months, 2)
 
     try:
         explanation = _run_explanation(request, approved, interest_rate, total_amount, monthly_payment)
-    except Exception:
-        explanation = "Análise indisponível no momento."
+    except Exception as e:
+        explanation = f"Análise indisponível: {str(e)}"
 
     return LoanResponse(
         approved=approved,
