@@ -117,7 +117,10 @@ def build_dataframe(req: LoanRequest) -> pd.DataFrame:
 
 
 def _get_groq_client():
-    return Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY não encontrada.")
+    return Groq(api_key=api_key)
 
 
 def _run_explanation(
