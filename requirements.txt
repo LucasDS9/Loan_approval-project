@@ -9,3 +9,8 @@ xgboost
 openpyxl
 aiofiles
 groq
+
+# visualização / app
+streamlit
+matplotlib
+seaborn
