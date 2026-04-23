@@ -51,11 +51,56 @@ Instituições financeiras precisam equilibrar dois objetivos conflitantes: **ma
 │   ├── pipeline.py
 │   ├── train.py
 │   └── evaluate.py
-│
+├── dash.py                         # Dashboard Streamlit
+├── requirements.txt
 └── README.md
-```
 
----
+```
+## 📊 Resultados
+
+### Visão Geral de Aprovações
+
+![Dashboard 1](images/dash1.png)
+
+1. A distribuição de aprovação mostra que **23.7%** dos clientes (1.187) foram aprovados, enquanto 3.813 tiveram suas tentativas de empréstimo negadas. Isso implica que a instituição possui um sistema rigoroso de aprovação. Nos gráficos seguintes, serão apresentados os fatores que influenciam essa decisão.
+2. O gráfico de aprovação por faixa etária mostra que a instituição não aprovou pessoas com menos de 24 anos. Para clientes acima dessa idade, há pouca influência da variável na decisão.
+3. No gráfico de aprovação por score de crédito, observa-se explicitamente que a instituição impôs um **limite mínimo de 550** para aprovação, indicando a existência de um critério de corte bem definido.
+
+### Fatores de Risco e Aprovação
+
+![Dashboard 2](images/dash2.png)
+
+A aprovação de crédito é fortemente impactada pelo histórico financeiro do cliente. Clientes sem delinquências concentram a grande maioria das aprovações (86,9%) e apresentam taxa significativamente superior (~54%), enquanto qualquer histórico negativo reduz drasticamente as chances — com nenhuma aprovação para 3 ou mais ocorrências.
+
+O número de empréstimos atuais não demonstra influência relevante na decisão, mantendo taxas semelhantes entre os grupos, com exceção de clientes com 5 empréstimos, que apresentam queda acentuada na aprovação.
+
+**Porcentagem aceita por quantidade de empréstimos:** 0: 33,3% · 1: 29,5% · 2: 28,4% · 3: 35,0% · 4: 38,5% · 5: 11,9%
+
+Já a situação de emprego é determinante: clientes desempregados não são aprovados, enquanto empregados e autônomos possuem taxas muito próximas (~42%).
+
+> **Conclusão:** o modelo prioriza fortemente baixo risco histórico e estabilidade financeira.
+
+### Taxa de Aprovação por Debt-to-Income
+
+![Dashboard 3](images/dash3.png)
+
+O gráfico de taxa de aprovação por comprometimento de renda (debt-to-income) mostra uma relação clara entre o nível de endividamento e a probabilidade de aprovação:
+
+1. Clientes com comprometimento entre **0% e 25%** apresentam taxa de aprovação de 38,97%, enquanto na faixa de **25% a 50%** a taxa é ligeiramente maior, com 40,51%.
+2. A partir da faixa de **50% a 75%**, a taxa de aprovação cai significativamente para 14,68%, indicando aumento relevante no risco percebido.
+3. Na faixa de **75% a 100%**, a taxa de aprovação é **0%**, demonstrando que níveis muito elevados de comprometimento de renda inviabilizam a concessão de crédito.
+
+> **Conclusão:** quanto maior o comprometimento de renda, menor a probabilidade de aprovação, sendo este um dos principais fatores de risco analisados pela instituição.
+
+
+
+## 🧠 Principais Insights
+
+- **Regras de negócio identificadas:** idade mínima de 24 anos, score mínimo de 550, desempregados e clientes com mais de duas inadimplências não são aprovados, e comprometimento de renda acima de 50% reduz drasticamente as chances de aprovação.
+- As **variáveis mais relevantes para a classificação** foram score de crédito, status de emprego, histórico de inadimplências e percentual de renda comprometida.
+- A **taxa de juros** é influenciada principalmente pelo comprometimento de renda, existência de empréstimos ativos, número de parcelas definidas e score de crédito do cliente.
+
+
 
 ## 🧱 Etapas do Projeto
 
@@ -122,15 +167,6 @@ Taxa = 20.898 − 0.020 × credit_score − 0.041 × Loan_Term_Months
      + 0.598 × Existing_Loans_Count + 6.609 × debt_to_income
      − 0.007 × Savings_Account − 0.005 × gender
 ```
-
----
-
-## 🧠 Principais Insights
-
-- O **credit score** e o **debt-to-income ratio** são os fatores com maior impacto na taxa de juros
-- Clientes com mais empréstimos existentes recebem taxas maiores, refletindo maior risco percebido
-- O modelo de regressão obteve R² de 0.9977 no teste, demonstrando altíssima precisão na precificação
-- A análise de lucratividade ao final do notebook demonstra o impacto financeiro direto do modelo para a instituição
 
 ---
 
